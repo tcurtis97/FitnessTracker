@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,8 +25,6 @@ namespace FitnessTracker.Models
 
         [DisplayName("Image")]
         public string ImageLocation { get; set; }
-        public int UserTypeId { get; set; }
-        public UserType UserType { get; set; }
 
         [DisplayName("Full Name")]
         public string FullName
