@@ -5,10 +5,15 @@ using System.Threading.Tasks;
 
 namespace FitnessTracker.Models
 {
-    public class WorkoutMuscleGroup
+    public class WorkoutSession
     {
         public int Id { get; set; }
+
         public int WorkoutId { get; set; }
-        public int MuscleId { get; set; }
+
+        public DateTime SessionDate { get; set; }
+
+        [Required]
+        public string Name { get; set; }
     }
 }
