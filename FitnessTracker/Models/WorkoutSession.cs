@@ -13,7 +13,6 @@ namespace FitnessTracker.Models
 
         public DateTime SessionDate { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        public int UserProfileId { get; set; }
     }
 }
