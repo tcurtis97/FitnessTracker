@@ -1,5 +1,7 @@
 ﻿using FitnessTracker.Models;
+using FitnessTracker.Utils;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +22,8 @@ namespace FitnessTracker.Repositories
                 {
                     cmd.CommandText = @"
                        SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
-                              u.CreateDateTime, u.ImageLocation, u.UserTypeId,
-                              ut.[Name] AS UserTypeName
-                         FROM UserProfile u
-                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
-                         WHERE u.IsDeactivated = 0";
+                              u.CreateDateTime, u.ImageLocation
+                         ";
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -41,10 +40,10 @@ namespace FitnessTracker.Repositories
             }
         }
 
-       
 
-      
-        
+
+
+
         public UserProfile GetByEmail(string email)
         {
             using (var conn = Connection)
@@ -54,11 +53,7 @@ namespace FitnessTracker.Repositories
                 {
                     cmd.CommandText = @"
                        SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
-                              u.CreateDateTime, u.ImageLocation, u.UserTypeId,
-                              ut.[Name] AS UserTypeName
-                         FROM UserProfile u
-                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
-                        WHERE email = @email AND u.IsDeactivated = 0";
+                              u.CreateDateTime, u.ImageLocation";
                     cmd.Parameters.AddWithValue("@email", email);
 
                     UserProfile userProfile = null;
@@ -84,10 +79,8 @@ namespace FitnessTracker.Repositories
                 {
                     cmd.CommandText = @"
                         SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
-                              u.CreateDateTime, u.ImageLocation, u.UserTypeId,
-                              ut.[Name] AS UserTypeName
+                              u.CreateDateTime, u.ImageLocation
                          FROM UserProfile u
-                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
                         WHERE u.id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 
@@ -112,27 +105,27 @@ namespace FitnessTracker.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        INSERT INTO UserProfile (DisplayName, FirstName, LastName, Email, CreateDateTime, ImageLocation, UserTypeId)
+                        INSERT INTO UserProfile (DisplayName, FirstName, LastName, Email, CreateDateTime, ImageLocation)
                         OUTPUT INSERTED.ID
-                        VALUES (@displayName, @firstName, @lastName, @email, SYSDATETIME(), @imageLocation, @userTypeId)";
+                        VALUES (@displayName, @firstName, @lastName, @email, SYSDATETIME(), @imageLocation)";
                     cmd.Parameters.AddWithValue("@displayName", user.DisplayName);
                     cmd.Parameters.AddWithValue("@firstName", user.FirstName);
                     cmd.Parameters.AddWithValue("@lastName", user.LastName);
                     cmd.Parameters.AddWithValue("@email", user.Email);
                     cmd.Parameters.AddWithValue("@imageLocation", DbUtils.ValueOrDBNull(user.ImageLocation));
-                    cmd.Parameters.AddWithValue("@userTypeId", user.UserTypeId);
+
 
                     user.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
 
-       
 
-      
-        
 
-     
+
+
+
+
 
         private UserProfile NewUserFromReader(SqlDataReader reader)
         {
@@ -144,14 +137,7 @@ namespace FitnessTracker.Repositories
                 LastName = reader.GetString(reader.GetOrdinal("LastName")),
                 DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
                 CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
-                ImageLocation = DbUtils.GetNullableString(reader, "ImageLocation"),
-                UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
-                UserType = new UserType()
-                {
-                    Id = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
-                    Name = reader.GetString(reader.GetOrdinal("UserTypeName"))
-                },
-
+                ImageLocation = DbUtils.GetNullableString(reader, "ImageLocation")
             };
         }
     }

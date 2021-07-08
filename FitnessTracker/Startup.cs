@@ -1,3 +1,4 @@
+using FitnessTracker.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +25,7 @@ namespace FitnessTracker
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddTransient<IUserProfileRepository, UserProfileRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
