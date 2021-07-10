@@ -23,6 +23,7 @@ namespace FitnessTracker.Repositories
                     cmd.CommandText = @"
                        SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
                               u.CreateDateTime, u.ImageLocation
+                                FROM UserProfile u
                          ";
 
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -53,7 +54,9 @@ namespace FitnessTracker.Repositories
                 {
                     cmd.CommandText = @"
                        SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
-                              u.CreateDateTime, u.ImageLocation";
+                              u.CreateDateTime, u.ImageLocation
+                                FROM UserProfile u
+                                      WHERE email = @email";
                     cmd.Parameters.AddWithValue("@email", email);
 
                     UserProfile userProfile = null;

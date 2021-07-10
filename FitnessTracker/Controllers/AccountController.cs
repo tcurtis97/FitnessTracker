@@ -20,32 +20,6 @@ namespace FitnessTracker.Controllers
             _userProfileRepository = userProfileRepository;
         }
 
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(UserProfile userProfile)
-        {
-            try
-            {
-                _userProfileRepository.AddUser(userProfile);
-                Credentials credentials = new Credentials()
-                {
-                    Email = userProfile.Email
-                };
-                //return RedirectToAction("Login");
-                await Login(credentials);
-                return RedirectToAction("Index", "Home");
-            }
-            catch
-            {
-                return View(userProfile);
-            }
-        }
-
         public IActionResult Login()
         {
             return View();
@@ -58,7 +32,7 @@ namespace FitnessTracker.Controllers
 
             if (userProfile == null)
             {
-                ModelState.AddModelError("Email", "Invalid email or user has been deactivated");
+                ModelState.AddModelError("Email", "Invalid email");
                 return View();
             }
 
@@ -66,8 +40,6 @@ namespace FitnessTracker.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, userProfile.Id.ToString()),
                 new Claim(ClaimTypes.Email, userProfile.Email),
-                new Claim(ClaimTypes.Name, userProfile.DisplayName),
-                
             };
 
             var claimsIdentity = new ClaimsIdentity(
@@ -85,6 +57,5 @@ namespace FitnessTracker.Controllers
             await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
     }
 }
