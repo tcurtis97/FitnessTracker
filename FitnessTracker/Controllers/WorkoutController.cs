@@ -42,7 +42,7 @@ namespace FitnessTracker.Controllers
         // POST: WorkoutController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Workout workout)
         {
             try
             {
@@ -57,21 +57,27 @@ namespace FitnessTracker.Controllers
         // GET: WorkoutController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Workout workout = _workoutRepo.GetWorkoutById(id);
+            if (workout == null)
+            {
+                return NotFound();
+            }
+            return View(workout);
         }
 
         // POST: WorkoutController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Workout workout)
         {
             try
             {
+                _workoutRepo.UpdateWorkout(workout);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(workout);
             }
         }
 
