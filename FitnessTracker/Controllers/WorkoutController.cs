@@ -78,21 +78,23 @@ namespace FitnessTracker.Controllers
         // GET: WorkoutController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Workout workout = _workoutRepo.GetWorkoutById(id);
+            return View(workout);
         }
 
         // POST: WorkoutController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Workout workout)
         {
             try
             {
+                _workoutRepo.DeleteWorkout(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(workout);
             }
         }
     }
