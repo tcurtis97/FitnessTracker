@@ -27,6 +27,7 @@ namespace FitnessTracker.Controllers
         }
 
         // GET: WorkoutController/Details/5
+
         public ActionResult Details(int id)
         {
             return View();
